@@ -1,6 +1,6 @@
 {
   "name": "hexo-generator-index-top",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Index generator for Hexo with pin top and customized style",
   "main": "index",
   "scripts": {
