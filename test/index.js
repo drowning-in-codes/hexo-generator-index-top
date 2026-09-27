@@ -2,6 +2,9 @@
 
 const should = require('chai').should(); // eslint-disable-line
 const Hexo = require('hexo');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 describe('Index generator', () => {
   const hexo = new Hexo(__dirname, {silent: true});
@@ -162,4 +165,99 @@ describe('Index generator', () => {
 
   });
 
+  describe('top/sticky', () => {
+    it('does not mark any post when none is pinned', () => {
+      hexo.config.index_generator.top_class = 'featured';
+
+      const result = generator(locals);
+
+      should.not.exist(result[0].data.posts.eq(0).top_class);
+    });
+
+    describe('with pinned posts', () => {
+      before(() => Post.insert([
+        {source: 'top100', slug: 'top100', date: 1e8 + 100, top: 100},
+        {source: 'top50', slug: 'top50', date: 1e8 + 101, top: 50},
+        {source: 'sticky30', slug: 'sticky30', date: 1e8 + 102, sticky: 30},
+        {source: 'plain1', slug: 'plain1', date: 1e8 + 103}
+      ]).then(() => {
+        hexo.locals.invalidate();
+        locals = hexo.locals.toObject();
+      }));
+
+      it('pins posts by top value, with sticky as fallback', () => {
+        const result = generator(locals);
+        const pagePosts = result[0].data.posts;
+
+        pagePosts.eq(0).slug.should.eql('top100');
+        pagePosts.eq(1).slug.should.eql('top50');
+        pagePosts.eq(2).slug.should.eql('sticky30');
+        pagePosts.eq(3).slug.should.eql('plain1');
+      });
+
+      it('marks the highest-pinned post with the configured top_class', () => {
+        hexo.config.index_generator.top_class = 'featured';
+
+        const result = generator(locals);
+        const pagePosts = result[0].data.posts;
+
+        pagePosts.eq(0).top_class.should.eql('featured');
+        should.not.exist(pagePosts.eq(1).top_class);
+      });
+
+      it('does not mark any post when top_class is empty', () => {
+        hexo.config.index_generator.top_class = '';
+
+        const result = generator(locals);
+
+        should.not.exist(result[0].data.posts.eq(0).top_class);
+      });
+    });
+  });
+
+});
+
+describe('top style injector', () => {
+  it('injects top_css into the home page head when configured', () => {
+    const hexo = new Hexo(__dirname, { silent: true });
+    hexo.config.index_generator = { top_css: '.top { border: 1px solid red; }' };
+
+    require('../lib/injector')(hexo);
+
+    hexo.extend.injector.get('head_end', 'home').join('').should.contain('<style>.top { border: 1px solid red; }</style>');
+  });
+
+  it('loads top_css from a file when the value points to an existing file', () => {
+    const hexo = new Hexo(__dirname, { silent: true });
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hexo-top-'));
+    const file = path.join(tmp, 'top.css');
+    fs.writeFileSync(file, '.top { color: green; }');
+    hexo.config.index_generator = { top_css: file };
+
+    require('../lib/injector')(hexo);
+
+    hexo.extend.injector.get('head_end', 'home').join('').should.contain('<style>.top { color: green; }</style>');
+  });
+
+  it('resolves top_css relative to the source directory', () => {
+    const base = fs.mkdtempSync(path.join(os.tmpdir(), 'hexo-site-'));
+    fs.mkdirSync(path.join(base, 'source', 'css'), { recursive: true });
+    fs.writeFileSync(path.join(base, 'source', 'css', 'top.css'), '.top { color: blue; }');
+
+    const hexo = new Hexo(base, { silent: true });
+    hexo.config.index_generator = { top_css: 'css/top.css' };
+
+    require('../lib/injector')(hexo);
+
+    hexo.extend.injector.get('head_end', 'home').join('').should.contain('<style>.top { color: blue; }</style>');
+  });
+
+  it('does not inject when top_css is empty', () => {
+    const hexo = new Hexo(__dirname, { silent: true });
+    hexo.config.index_generator = { top_css: '' };
+
+    require('../lib/injector')(hexo);
+
+    hexo.extend.injector.get('head_end', 'home').should.have.length(0);
+  });
 });

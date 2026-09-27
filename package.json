@@ -1,7 +1,7 @@
 {
-  "name": "hexo-generator-index",
-  "version": "4.0.0",
-  "description": "Index generator for Hexo.",
+  "name": "hexo-generator-index-top",
+  "version": "1.0.0",
+  "description": "Index generator for Hexo with pin top and customized style",
   "main": "index",
   "scripts": {
     "eslint": "eslint .",
@@ -18,7 +18,10 @@
   "engines": {
     "node": ">=22"
   },
-  "repository": "hexojs/hexo-generator-index",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drowning-in-codes/hexo-generator-index-top.git"
+  },
   "homepage": "https://hexo.io/",
   "keywords": [
     "hexo",
@@ -26,7 +29,7 @@
     "index",
     "home"
   ],
-  "author": "Tommy Chen <tommy351@gmail.com> (https://zespia.tw)",
+  "author": "Proanimer <bukalala174@gmail.com> (https://sekyoro.top)",
   "license": "MIT",
   "devDependencies": {
     "c8": "^10.1.2",

@@ -25,6 +25,8 @@ index_generator:
   order_by: -date
   pagination_dir: page
   layout: ["index", "archive"]
+  top_class: top
+  top_css: ""
 ```
 
 - **path**: Root path for your blog's index page.
@@ -39,18 +41,47 @@ index_generator:
   - e.g. set `awesome-page` makes the URL ends with `awesome-page/<page number>` for second page and beyond.
 - **layout**: custom layout.
   - defalut: `["index", "archive"]`
+- **top_class**: CSS class applied to the highest-pinned post.
+  - default: `top`
+  - set to `""` to disable.
+- **top_css**: CSS rules injected into the home page `<head>` (via [hexo injector](https://hexo.io/api/injector)) to style the highest-pinned post.
+  - default: `""` (disabled)
+  - accepts either an inline CSS string, or a path to a CSS file whose contents are injected. A relative path is resolved against your `source/` directory first, then your site root.
 
 ## Usage
 
-The `sticky` parameter in the post [Front-matter](https://hexo.io/docs/front-matter) will be used to pin the post to the top of the index page. Higher `sticky` means that it will be ranked first.
+The `top` parameter in the post [Front-matter](https://hexo.io/docs/front-matter) will be used to pin the post to the top of the index page. Higher `top` means that it will be ranked first. `sticky` is also supported as a fallback (`top` takes precedence when both are set).
 
 ```yml
 ---
 title: Hello World
 date: 2013/7/13 20:46:25
-sticky: 100
+top: 100
 ---
 ```
+
+The post with the greatest pin value gets the class configured by `top_class` (default `top`) written to its `top_class` property. To style it, set `top_css` — the plugin injects those CSS rules into the home page `<head>` via the [injector](https://hexo.io/api/injector):
+
+```yaml
+index_generator:
+  top_css: ".top { border-left: 4px solid #f0c040; }"
+```
+
+`top_css` can also point to a CSS file; its contents are injected instead. A relative path is resolved against `source/` first, then the site root, so both of these work:
+
+```yaml
+index_generator:
+  top_css: "css/top.css"        # resolves to source/css/top.css
+  # top_css: "source/css/top.css" # or explicit, relative to the site root
+```
+
+Your theme also needs to render the class onto the post element:
+
+```ejs
+<article class="post <%= post.top_class %>">…</article>
+```
+
+Set `top_css` to `""` (the default) to inject nothing and style the class yourself in your theme.
 
 The `hidden` parameter can be used to hide a post from the index page. When `hidden: true` is set, the post will not appear in the index but will still be accessible in other ways (e.g., the archive page or via a direct link).
 
