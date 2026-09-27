@@ -1,8 +1,8 @@
-# hexo-generator-index
+# hexo-generator-index-top
 
-[![Build Status](https://github.com/hexojs/hexo-generator-index/workflows/Tester/badge.svg?branch=master)](https://github.com/hexojs/hexo-generator-index/actions?query=workflow%3ATester)
-[![NPM version](https://badge.fury.io/js/hexo-generator-index.svg)](https://www.npmjs.com/package/hexo-generator-index)
-[![Coverage Status](https://img.shields.io/coveralls/hexojs/hexo-generator-index.svg)](https://coveralls.io/r/hexojs/hexo-generator-index?branch=master)
+[![Build Status](https://github.com/drowning-in-codes/hexo-generator-index-top/workflows/Tester/badge.svg?branch=master)](https://github.com/drowning-in-codes/hexo-generator-index-top/actions?query=workflow%3ATester)
+[![NPM version](https://badge.fury.io/js/hexo-generator-index-top.svg)](https://www.npmjs.com/package/hexo-generator-index-top)
+[![Coverage Status](https://img.shields.io/coveralls/drowning-in-codes/hexo-generator-index-top.svg)](https://coveralls.io/r/drowning-in-codes/hexo-generator-index-top?branch=master)
 
 Index generator for [Hexo].
 
@@ -11,7 +11,7 @@ It generates an archive of posts on your homepage, according to the `index` or `
 ## Installation
 
 ```bash
-npm install hexo-generator-index --save
+npm install hexo-generator-index-top --save
 ```
 
 ## Options
