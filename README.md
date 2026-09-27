@@ -76,7 +76,9 @@ index_generator:
   # top_css: "source/css/top.css" # or explicit, relative to the site root
 ```
 
-Your theme also needs to render the class onto the post element:
+The plugin also injects a small script that adds the class to the first post element on the home page (matching `article.post`, or `article.article` for themes like the default landscape). So you usually don't need to modify your theme at all.
+
+If your theme renders posts inside a different element, render the class yourself in your theme template instead:
 
 ```ejs
 <article class="post <%= post.top_class %>">…</article>

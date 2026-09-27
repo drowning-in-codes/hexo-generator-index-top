@@ -172,6 +172,7 @@ describe('Index generator', () => {
       const result = generator(locals);
 
       should.not.exist(result[0].data.posts.eq(0).top_class);
+      hexo.extend.injector.get('head_end', 'home').should.have.length(0);
     });
 
     describe('with pinned posts', () => {
@@ -203,6 +204,14 @@ describe('Index generator', () => {
 
         pagePosts.eq(0).top_class.should.eql('featured');
         should.not.exist(pagePosts.eq(1).top_class);
+      });
+
+      it('registers a script to add the class to the first post', () => {
+        hexo.config.index_generator.top_class = 'top-test';
+
+        generator(locals);
+
+        hexo.extend.injector.get('head_end', 'home').join('').should.contain('classList.add("top-test")');
       });
 
       it('does not mark any post when top_class is empty', () => {
