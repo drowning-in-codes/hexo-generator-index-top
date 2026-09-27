@@ -252,6 +252,22 @@ describe('top style injector', () => {
     hexo.extend.injector.get('head_end', 'home').join('').should.contain('<style>.top { color: blue; }</style>');
   });
 
+  it('resolves top_css relative to the theme css directory', () => {
+    const base = fs.mkdtempSync(path.join(os.tmpdir(), 'hexo-site-'));
+    const hexo = new Hexo(base, { silent: true });
+    const themeDir = path.join(base, 'themes', 'next');
+    hexo.theme_dir = themeDir + path.sep;
+    const cssDir = path.join(themeDir, 'source', 'css');
+    fs.mkdirSync(cssDir, { recursive: true });
+    fs.writeFileSync(path.join(cssDir, 'top.css'), '.top { color: purple; }');
+
+    hexo.config.index_generator = { top_css: 'top.css' };
+
+    require('../lib/injector')(hexo);
+
+    hexo.extend.injector.get('head_end', 'home').join('').should.contain('<style>.top { color: purple; }</style>');
+  });
+
   it('does not inject when top_css is empty', () => {
     const hexo = new Hexo(__dirname, { silent: true });
     hexo.config.index_generator = { top_css: '' };

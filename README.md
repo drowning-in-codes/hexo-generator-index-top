@@ -46,7 +46,7 @@ index_generator:
   - set to `""` to disable.
 - **top_css**: CSS rules injected into the home page `<head>` (via [hexo injector](https://hexo.io/api/injector)) to style the highest-pinned post.
   - default: `""` (disabled)
-  - accepts either an inline CSS string, or a path to a CSS file whose contents are injected. A relative path is resolved against your `source/` directory first, then your site root.
+  - accepts either an inline CSS string, or a path to a CSS file whose contents are injected. A relative path is resolved against your theme's `source/css/` directory first, then your site's `source/` directory, then your site root.
 
 ## Usage
 
@@ -67,11 +67,12 @@ index_generator:
   top_css: ".top { border-left: 4px solid #f0c040; }"
 ```
 
-`top_css` can also point to a CSS file; its contents are injected instead. A relative path is resolved against `source/` first, then the site root, so both of these work:
+`top_css` can also point to a CSS file; its contents are injected instead. A relative path is resolved against your theme's `source/css/` directory first, then your site's `source/` directory, then the site root, so all of these work:
 
 ```yaml
 index_generator:
-  top_css: "css/top.css"        # resolves to source/css/top.css
+  top_css: "top.css"              # resolves to themes/<theme>/source/css/top.css
+  # top_css: "css/top.css"        # resolves to source/css/top.css
   # top_css: "source/css/top.css" # or explicit, relative to the site root
 ```
 
